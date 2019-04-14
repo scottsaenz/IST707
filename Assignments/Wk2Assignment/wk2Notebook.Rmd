@@ -1,0 +1,56 @@
+---
+title: "Math Course Progression"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*.
+
+Function for Removing NAs
+```{r function Check for NAs}
+findNAs <- function(df) {
+  # Turn blanks into NAs
+  df[df==""] <- NA
+  cnames <- colnames(df)
+  i = 0
+  for (name in cnames){
+    if(sum(is.na(df[,name])) > 0){
+      print(name)
+      i <- i + 1
+    }
+  }
+  print(c(i,"variables contain NAs"))
+}
+```
+
+
+Read in file and check where cleaning is needed.
+
+```{r}
+# read in csv 
+mathProgress <- read.csv("data-storyteller.csv")
+# check structure
+str(mathProgress)
+#check for NAs
+findNAs(mathProgress)
+```
+
+Change section to factor datatype and review initial descriptive statistics
+```{r}
+mathProgress$Section <- factor(mathProgress$Section)
+summary(mathProgress)
+```
+
+Upivot the data
+```{r}
+mathProgressUnpivot <- reshape2::melt(mathProgress, id = c("School","Section"), value.name="NumOfStudents", variable.name = "Progress")
+mathProgressUnpivot
+```
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
